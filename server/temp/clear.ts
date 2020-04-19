@@ -15,9 +15,11 @@ const clear = async () => {
     if (bookings.length > 0) {
       await db.bookings.drop();
     }
+
     if (listings.length > 0) {
       await db.listings.drop();
     }
+
     if (users.length > 0) {
       await db.users.drop();
     }
