@@ -52,7 +52,7 @@ export interface Listing {
 }
 
 export interface Database {
-  listings: Collection<Listing>;
-  users: Collection<User>;
   bookings: Collection<Booking>;
+  users: Collection<User>;
+  listings: Collection<Listing>;
 }
