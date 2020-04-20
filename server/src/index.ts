@@ -22,10 +22,6 @@ const mount = async (app: Application) => {
       `GraphQL Playerground has been launched on.. [app]:http://localhost:${process.env.PORT}/api`
     );
   });
-
-  // For testing purposes
-  // const listings = await db.listings.find({}).toArray();
-  // console.log(listings);
 };
 
 mount(express());
