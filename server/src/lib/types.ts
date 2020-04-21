@@ -1,5 +1,13 @@
 import { Collection, ObjectId } from 'mongodb';
-
+/* the "viewer" is to represent the "user" object that's in Mongodb and encapsulates the sensitive data,
+we'll substitute the actual "walletId" with "hasWallet" when sending interacting with the client for security purposes. */
+export interface Viewer {
+    _id?: string;
+    token?: string;
+    avatar?: string;
+    walletId?: string;
+    didRequest: boolean;
+}
 interface BookingsIndexMonth {
     [key: string]: boolean;
 }
@@ -11,10 +19,10 @@ export interface BookingsIndex {
 }
 export interface Booking {
     _id: ObjectId;
-    listing: ObjectId;
     tenant: string;
     checkIn: string;
     checkOut: string;
+    listing: ObjectId;
 }
 export interface User {
     _id: string;
@@ -43,12 +51,11 @@ export interface Listing {
     country: string;
     admin: string;
     city: string;
-    bookings: ObjectId[];
-    bookingsIndex: BookingsIndex;
     price: number;
     numOfGuests: number;
+    bookings: ObjectId[];
+    bookingsIndex: BookingsIndex;
 }
-
 export interface Database {
     bookings: Collection<Booking>;
     users: Collection<User>;

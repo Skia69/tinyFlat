@@ -23,12 +23,10 @@ export const Google = {
         // set the auth credentials.
         auth.setCredentials(tokens);
         // make a request to Google's People API to get the user information we'll need.
-        const { data } = await google
-            .people({ version: 'v1', auth })
-            .people.get({
-                resourceName: 'people/me',
-                personFields: 'emailAddresses,names,photos',
-            });
+        const { data } = await google.people({ version: 'v1', auth }).people.get({
+            resourceName: 'people/me',
+            personFields: 'emailAddresses,names,photos',
+        });
 
         return { user: data };
     },
