@@ -5,11 +5,13 @@ Home Booking WebApp (React, Typescript, Nodejs, GraphQL, Apollo &amp; MongoDB)
 
 ### Server 
 ```
-PORT = Port Number
-DB_USER = MongoDB User
-DB_USER_PASSWORD = MongoDB Password
+PORT = Port number
+DB_USER = MongoDB user
+DB_USER_PASSWORD = MongoDB password
 DB_CUSTER = MongdoDB cluster
-G_CLIENT_ID = Google Client Id
-G_CLIENT_SECRET = Google Client Secret
-PUBLIC_URL = Public Url
+G_CLIENT_ID = Google client id
+G_CLIENT_SECRET = Google client secret
+PUBLIC_URL = Public url
+SECRET = Cookie secret
+NODE_ENV = Node environment
 ```
