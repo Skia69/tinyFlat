@@ -41,8 +41,9 @@ export const Login = ({ setViewer }: Props) => {
   const logInRef = useRef(logIn);
   /* we'll want to run the login mutation the moment our <LogIn /> component is being rendered 
   and the "code" is available as a query parameter,
-  therefore we'll make use of the useEffect hook and throw in a conditional. */
+  we always wanna prevent unnecessary re-renders which is why a useRef is being used. */
   useEffect(() => {
+    // extract "code" from the url and pass it as an argument to the logIn function.
     const code = new URL(window.location.href).searchParams.get('code');
     if (code) {
       logInRef.current({
