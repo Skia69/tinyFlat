@@ -7,7 +7,7 @@ import { logInArgs } from './types';
 
 const cookieOptions = {
   httpOnly: true,
-  sameSite: true, // helps prevent CSRF attacks.
+  sameSite: true, // helps prevent X-CSRF attacks.
   signed: true, // HMAC and base64 encoding.
   secure: process.env.NODE_ENV === 'development' ? false : true,
 };
@@ -119,7 +119,7 @@ export const viewerResolvers: IResolvers = {
       try {
         // extract the code when the user will have been redirected to the Google consent form.
         const code = input?.code;
-        // generate a token which will be sent to the client and will eventually be used to authorize the incoming requests.
+        /* generate a token which will be sent to the client and will eventually be used to authorize the incoming requests. This token will be regenerated everytime a user logs in. */
         const token = crypto.randomBytes(16).toString('hex');
         /* custom logIn function with a return value that's to be stored in a "viewer" variable.
           it will only fire if the viewer has actually been redirected to the Google consent form and thus received a code.

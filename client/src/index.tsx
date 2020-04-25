@@ -16,7 +16,18 @@ import { ErrorBanner } from './lib/components';
 import { Viewer } from './lib/types';
 import './styles/index.css';
 
-const client = new ApolloClient({ uri: '/api' });
+const client = new ApolloClient({
+  uri: '/api',
+  request: (operation) => {
+    /* sessionStorage is the ideal storage mechanism here since data in sessionStorage is not automatically sent to our server unlike our cookie and we want our token to be part of the request header as another alternative verification step. */
+    const token = sessionStorage.getItem('token');
+    operation.setContext({
+      headers: {
+        'X-CSRF-TOKEN': token || '',
+      },
+    });
+  },
+});
 
 const initialViewer: Viewer = {
   id: null,
@@ -31,8 +42,13 @@ const App = () => {
   // use the viewer cookie to automatically log a viewer in when the app first renders and the cookie is available.
   const [logIn, { error }] = useMutation<LogInData, LogInVariables>(LOG_IN, {
     onCompleted: (data) => {
-      if (data && data.logIn) {
+      if (data?.logIn) {
         setViewer(data.logIn);
+        /* if the request is complete but no token exists, 
+        we'll also go ahead and clear the existing token from our sessionStorage for safety reasons. */
+        data.logIn.token
+          ? sessionStorage.setItem('token', data.logIn.token)
+          : sessionStorage.removeItem('token');
       }
     },
   });
