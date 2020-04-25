@@ -1,3 +1,3 @@
 export interface logInArgs {
-    input?: { code: string };
+  input?: { code: string };
 }
