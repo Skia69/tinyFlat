@@ -9,8 +9,8 @@ import { AuthUrl as AuthUrlData } from '../../lib/graphql/queries/AuthUrl/__gene
 import { AUTH_URL } from '../../lib/graphql/queries/AuthUrl';
 import { LOG_IN } from '../../lib/graphql/mutations/LogIn';
 import {
-  logIn as LogInData,
-  logInVariables,
+  LogIn as LogInData,
+  LogInVariables,
 } from '../../lib/graphql/mutations/LogIn/__generated__/logIn';
 import { displaySuccessNotification, displayErrorMessage } from '../../lib/utils';
 import { ErrorBanner } from '../../lib/components';
@@ -28,7 +28,7 @@ export const Login = ({ setViewer }: Props) => {
   // capture the "code" received from Google api and send it to the server so that we receive a token.
   const [logIn, { data: logInData, loading: logInloading, error: logInError }] = useMutation<
     LogInData,
-    logInVariables
+    LogInVariables
   >(LOG_IN, {
     onCompleted: (data) => {
       if (data && data.logIn) {

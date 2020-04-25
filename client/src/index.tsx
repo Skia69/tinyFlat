@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { render } from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloProvider, useMutation } from '@apollo/react-hooks';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Layout, Affix } from 'antd';
-
+import { Layout, Affix, Spin } from 'antd';
 import { Home, Host, Listing, Listings, NotFound, User, Login, AppHeader } from './sections';
+import { LOG_IN } from './lib/graphql/mutations/LogIn';
+import {
+  LogIn as LogInData,
+  LogInVariables,
+} from './lib/graphql/mutations/LogIn/__generated__/logIn';
+import { AppHeaderSkeleton } from './lib/components';
+import { ErrorBanner } from './lib/components';
 import { Viewer } from './lib/types';
 import './styles/index.css';
 
@@ -22,15 +28,46 @@ const initialViewer: Viewer = {
 
 const App = () => {
   const [viewer, setViewer] = useState<Viewer>(initialViewer);
+  // use the viewer cookie to automatically log a viewer in when the app first renders and the cookie is available.
+  const [logIn, { error }] = useMutation<LogInData, LogInVariables>(LOG_IN, {
+    onCompleted: (data) => {
+      if (data && data.logIn) {
+        setViewer(data.logIn);
+      }
+    },
+  });
+
+  const logInRef = useRef(logIn);
+
+  useEffect(() => {
+    logInRef.current();
+  }, []);
+
+  /* we could use the loading value from the mutation result but in this case, we'll check for the didRequest property of the viewer state object and the error state of our request. We know that the didRequest field will only be set to true when the request for viewer information has been made complete so we'll use this field to verify that the viewer hasn't finished the log-in attempt. We'll also check for the error status of our mutation request. If at any moment, the mutation contains errors, we'll stop displaying the loading indicator and show a banner in our app. */
+  if (!viewer.didRequest && !error) {
+    return (
+      <Layout className="app-skeleton">
+        <AppHeaderSkeleton />
+        <div className="app-skeleton__spin-section">
+          <Spin size="large" tip="Launching Tinyhouse" />
+        </div>
+      </Layout>
+    );
+  }
+
+  const logInErrorBannerElement = error ? (
+    <ErrorBanner description="We weren't able to verify if you were logged in. Please try again later!" />
+  ) : null;
 
   return (
     <Router>
-      <Affix offsetTop={0} className="app__affix-header">
-        <div>
-          <AppHeader viewer={viewer} setViewer={setViewer} />
-        </div>
-      </Affix>
       <Layout id="app">
+        {logInErrorBannerElement}
+        <Affix offsetTop={0} className="app__affix-header">
+          <div>
+            <AppHeader viewer={viewer} setViewer={setViewer} />
+          </div>
+        </Affix>
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/host" component={Host} />

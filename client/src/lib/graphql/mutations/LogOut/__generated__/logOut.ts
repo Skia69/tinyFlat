@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: logOut
+// GraphQL mutation operation: LogOut
 // ====================================================
 
-export interface logOut_logOut {
+export interface LogOut_logOut {
   __typename: "Viewer";
   id: string | null;
   token: string | null;
@@ -16,6 +16,6 @@ export interface logOut_logOut {
   didRequest: boolean;
 }
 
-export interface logOut {
-  logOut: logOut_logOut;
+export interface LogOut {
+  logOut: LogOut_logOut;
 }
