@@ -1,4 +1,16 @@
 import { Collection, ObjectId } from 'mongodb';
+
+export interface User {
+  _id: string;
+  token: string;
+  name: string;
+  avatar: string;
+  contact: string;
+  walletId?: string;
+  income: number;
+  bookings: ObjectId[];
+  listings: ObjectId[];
+}
 /* the "viewer" is to represent the "user" object that's in Mongodb and encapsulates the sensitive data,
 we'll substitute the actual "walletId" with "hasWallet" when sending interacting with the client for security purposes. */
 export interface Viewer {
@@ -23,17 +35,6 @@ export interface Booking {
   checkIn: string;
   checkOut: string;
   listing: ObjectId;
-}
-export interface User {
-  _id: string;
-  token: string;
-  name: string;
-  avatar: string;
-  contact: string;
-  walletId?: string;
-  income: number;
-  bookings: ObjectId[];
-  listings: ObjectId[];
 }
 
 export enum ListingType {

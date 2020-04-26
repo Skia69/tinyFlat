@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { Card, Layout, Spin, Typography } from 'antd';
 import { useApolloClient, useMutation } from '@apollo/react-hooks';
 import { Redirect } from 'react-router-dom';
-
 import googleLogo from './assets/google_logo.jpg';
 import { Viewer } from '../../lib/types';
 import { AuthUrl as AuthUrlData } from '../../lib/graphql/queries/AuthUrl/__generated__/AuthUrl';

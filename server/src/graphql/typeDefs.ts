@@ -1,6 +1,54 @@
 import { gql } from 'apollo-server-express';
 
 export const typeDefs = gql`
+  type Booking {
+    id: ID!
+    listing: Listing!
+    tenant: User!
+    checkIn: String!
+    checkOut: String!
+  }
+
+  type Bookings {
+    total: Int!
+    result: [Booking!]!
+  }
+
+  enum ListingType {
+    APARTMENT
+    HOUSE
+  }
+
+  type Listing {
+    id: ID!
+    title: String!
+    description: String!
+    image: String!
+    host: User!
+    type: ListingType!
+    address: String!
+    city: String!
+    bookings(limit: Int!, page: Int!): Bookings
+    bookingsIndex: String!
+    price: Int!
+    numOfGuests: Int!
+  }
+
+  type Listings {
+    total: Int!
+    result: [Listing!]!
+  }
+  # income and bookings are protected fields for privacy reasons.
+  type User {
+    id: ID!
+    name: String!
+    avatar: String!
+    contact: String!
+    hasWallet: Boolean!
+    income: Int
+    bookings(limit: Int!, page: Int!): Bookings
+    listings(limit: Int!, page: Int!): Listings!
+  }
   """
   this is the actual person viewing/using our app.
   They don't have to be logged in but we still want the client to inform us that someone is viewing our app.
@@ -23,8 +71,9 @@ export const typeDefs = gql`
   }
 
   type Query {
-    # this will redirect our user to Google so they can authorize our app and sign in.
+    # this will redirect our user to Google consent form from which we can obtain a code.
     authUrl: String!
+    user(id: ID!): User!
   }
 
   type Mutation {

@@ -157,7 +157,8 @@ export const viewerResolvers: IResolvers = {
   Viewer: {
     // "id" from the People api which is to resolved into "_id" for the Mongodb.
     id: (viewer: Viewer) => viewer._id,
-    // "walletId" is a sensitive info which is why we substitute it with "hasWallet" when sending it to the client.
+    /* "walletId" is a sensitive info which is  the Stripe id, 
+    we substitute it with "hasWallet" when sending it to the client. */
     hasWallet: (viewer: Viewer) => (viewer.walletId ? true : false),
   },
 };
