@@ -6,13 +6,13 @@ import { ApolloProvider, useMutation } from '@apollo/react-hooks';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Layout, Affix, Spin } from 'antd';
 import { Home, Host, Listing, Listings, NotFound, User, Login, AppHeader } from './sections';
-import { LOG_IN } from './lib/graphql/mutations/LogIn';
+import { LOG_IN } from './lib/graphql/mutations';
 import {
   LogIn as LogInData,
   LogInVariables,
 } from './lib/graphql/mutations/LogIn/__generated__/logIn';
 import { AppHeaderSkeleton } from './lib/components';
-import { ErrorBanner } from './lib/components';
+import { ErrorBanner, PageSkeleton } from './lib/components';
 import { Viewer } from './lib/types';
 import './styles/index.css';
 
@@ -94,7 +94,7 @@ const App = () => {
             path="/login"
             render={(props) => <Login {...props} setViewer={setViewer} />}
           />
-          <Route exact path="/user/:id" component={User} />
+          <Route exact path="/user/:id" render={(props) => <User {...props} viewer={viewer} />} />
           <Route component={NotFound} />
         </Switch>
       </Layout>

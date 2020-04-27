@@ -4,7 +4,7 @@ import { Button, Menu, Avatar } from 'antd';
 import { UserOutlined, LogoutOutlined, HomeOutlined } from '@ant-design/icons';
 import { useMutation } from '@apollo/react-hooks';
 import { LogOut as LogOutData } from '../../../../lib/graphql/mutations/LogOut/__generated__/logOut';
-import { LOG_OUT } from '../../../../lib/graphql/mutations/LogOut';
+import { LOG_OUT } from '../../../../lib/graphql/mutations';
 import { displaySuccessNotification, displayErrorMessage } from '../../../../lib/utils';
 import { Viewer } from '../../../../lib/types';
 

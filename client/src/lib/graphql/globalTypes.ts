@@ -7,7 +7,7 @@
 // START Enums and Input Objects
 //==============================================================
 
-export interface logInInput {
+export interface LogInInput {
   code: string;
 }
 

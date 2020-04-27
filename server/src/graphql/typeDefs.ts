@@ -66,7 +66,7 @@ export const typeDefs = gql`
     didRequest: Boolean!
   }
   #the code that is to be received after being redirected to Google auth url.
-  input logInInput {
+  input LogInInput {
     code: String!
   }
 
@@ -81,7 +81,7 @@ export const typeDefs = gql`
     our react client will fire this mutation while passing in the authorization code received when we already have been redirected to the Google sign-in form,
     it will then exchange this code with Google servers and obtain an access token of the signed-in user which can be used to interact with Google api.
     """
-    logIn(input: logInInput): Viewer!
+    logIn(input: LogInInput): Viewer!
     # this will return an instance of the logged in user.
     logOut: Viewer!
   }

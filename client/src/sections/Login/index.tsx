@@ -5,8 +5,8 @@ import { Redirect } from 'react-router-dom';
 import googleLogo from './assets/google_logo.jpg';
 import { Viewer } from '../../lib/types';
 import { AuthUrl as AuthUrlData } from '../../lib/graphql/queries/AuthUrl/__generated__/AuthUrl';
-import { AUTH_URL } from '../../lib/graphql/queries/AuthUrl';
-import { LOG_IN } from '../../lib/graphql/mutations/LogIn';
+import { AUTH_URL } from '../../lib/graphql/queries';
+import { LOG_IN } from '../../lib/graphql/mutations';
 import {
   LogIn as LogInData,
   LogInVariables,

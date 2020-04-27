@@ -39,15 +39,15 @@ export const useResolvers: IResolvers = {
   User: {
     id: (user: User): string => user._id,
     hasWallet: (user: User): boolean => Boolean(user.walletId),
-    // user has to be authorized first.
-    income: (user: User): number | null => (user.authorized ? user.income : null),
+    income: (user: User): number | null => (user.authorized ? user.income : null), // user has to be authorized first.
     bookings: async (
       user: User,
       { limit, page }: UserBookingsArgs,
       { db }: { db: Database },
     ): Promise<UsersBookingsData | null> => {
       try {
-        // check is the user is authorized first since the user bookings is a sensitive data.
+        /* check is the user is authorized first since the user bookings is a sensitive data,
+        and only the appropriate user can see their own bookings. */
         if (!user.authorized) {
           return null;
         }
@@ -57,7 +57,8 @@ export const useResolvers: IResolvers = {
         let cursor = await db.bookings.find({
           _id: { $in: user.bookings },
         });
-        /* If page is 1 and limit is 10, we don't skip anything since we're on the first page. If page is 2 and limit is 10, we skip the first 10 documents. And so on... */
+        /* If page is 1 and limit is 10, we don't skip anything since we're on the first page. 
+        If page is 2 and limit is 10, we skip the first 10 documents. And so on... */
         cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
         cursor = cursor.limit(limit); // limit the number of bookings displayed.
 
