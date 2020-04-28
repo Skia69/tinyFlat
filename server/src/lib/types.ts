@@ -43,6 +43,8 @@ export enum ListingType {
   Apartment = 'APARTMENT',
   House = 'HOUSE',
 }
+/* only the owner of a listing may see its bookings,
+therefore we'll an "authorized" property and toggle if the viewer viewing a listing is the actual owner. */
 export interface Listing {
   _id: ObjectId;
   title: string;
@@ -58,6 +60,7 @@ export interface Listing {
   numOfGuests: number;
   bookings: ObjectId[];
   bookingsIndex: BookingsIndex;
+  authroized?: boolean;
 }
 export interface Database {
   bookings: Collection<Booking>;

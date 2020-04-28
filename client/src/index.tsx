@@ -12,7 +12,7 @@ import {
   LogInVariables,
 } from './lib/graphql/mutations/LogIn/__generated__/logIn';
 import { AppHeaderSkeleton } from './lib/components';
-import { ErrorBanner, PageSkeleton } from './lib/components';
+import { ErrorBanner } from './lib/components';
 import { Viewer } from './lib/types';
 import './styles/index.css';
 

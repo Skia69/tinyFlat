@@ -18,7 +18,7 @@ export const typeDefs = gql`
     APARTMENT
     HOUSE
   }
-
+  # only the owner of a listing may see its bookings.
   type Listing {
     id: ID!
     title: String!
@@ -74,6 +74,7 @@ export const typeDefs = gql`
     # this will redirect our user to Google consent form from which we can obtain a code.
     authUrl: String!
     user(id: ID!): User!
+    listing(id: ID!): Listing!
   }
 
   type Mutation {
