@@ -1,5 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
 
+/* this field will be used in our resolver functions to determine whether a user has the authorization to resolve certain fields. it's not to be stored in the database. */
 export interface User {
   _id: string;
   token: string;
@@ -10,7 +11,6 @@ export interface User {
   income: number;
   bookings: ObjectId[];
   listings: ObjectId[];
-  /* this field will be used in our resolver functions to determine whether a user has the authorization to resolve certain fields. it's not to be stored in the database. */
   authorized?: boolean;
 }
 /* the "viewer" is to represent the "user" object that's in Mongodb and encapsulates the sensitive data,
