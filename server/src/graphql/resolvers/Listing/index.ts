@@ -1,6 +1,7 @@
 import { IResolvers } from 'apollo-server-express';
 import { Request } from 'express';
 import { authorize } from './../../../lib/utils';
+import { Google } from '../../../lib/api';
 import { Listing, Database, User } from '../../../lib/types';
 import {
   ListingArgs,
@@ -9,6 +10,7 @@ import {
   ListingsArgs,
   ListingsData,
   ListingsFilter,
+  ListingsQuery,
 } from './types';
 import { ObjectId } from 'mongodb';
 
@@ -37,13 +39,37 @@ export const listingResolvers: IResolvers = {
     },
     listings: async (
       _root: undefined,
-      { filter, limit, page }: ListingsArgs,
+      { location, filter, limit, page }: ListingsArgs,
       { db }: { db: Database },
     ): Promise<ListingsData> => {
-      try {
-        const data: ListingsData = { total: 0, result: [] };
+      // this query will be used to search for listings based on location.
+      const query: ListingsQuery = {};
 
-        let cursor = await db.listings.find({});
+      try {
+        const data: ListingsData = {
+          region: null,
+          total: 0,
+          result: [],
+        };
+        /* check if the location argument exists (since it won't be needed everywhere on the client)
+        and if it does we'll run the Google geocode() method and pass in the location value */
+        if (location) {
+          const { country, admin, city } = await Google.geocode(location);
+          // the main focus here is the country, it doesn't exist we'll throw an error.
+          if (city) query.city = city;
+          if (admin) query.admin = admin;
+          if (country) {
+            query.country = country;
+          } else {
+            throw new Error('no country found');
+          }
+          // this is to be displayed on the client in case a location is found.
+          const cityText = city ? `${city}, ` : '';
+          const adminText = admin ? `${admin}, ` : '';
+          data.region = `${cityText}${adminText}${country}`;
+        }
+
+        let cursor = await db.listings.find(query);
 
         if (filter && filter === ListingsFilter.PRICE_LOW_TO_HIGH) {
           cursor = cursor.sort({ price: 1 });

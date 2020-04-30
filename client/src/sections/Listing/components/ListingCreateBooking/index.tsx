@@ -51,7 +51,7 @@ export const ListingCreateBooking = ({
           <Paragraph>
             <Title level={2} className="listing-booking__card-title">
               {formatListingPrice(price)}
-              <span>/day</span>
+              <span>/night</span>
             </Title>
           </Paragraph>
           <Divider />
