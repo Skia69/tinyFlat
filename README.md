@@ -1,16 +1,14 @@
 # tinySkia
 Home Booking WebApp (React, Typescript, Nodejs, GraphQL, Apollo &amp; MongoDB)
 
-## Environment Variables (Client)
-
-### Client
+### Environment Variables (Client)
 File: ``client/.env``
 ```
 STRIPE_PUBLISHABLE_KEY = Stripe Publishable Key
 STRIPE_CLIENT_ID = Stripe Client ID
 ```
 
-### Server (Server)
+### Environment Variables (Server)
 File: ``Server/.env``
 ```
 PORT = Port Number
