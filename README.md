@@ -14,4 +14,5 @@ G_CLIENT_SECRET = Google client secret
 PUBLIC_URL = Public url
 SECRET = Cookie secret
 NODE_ENV = Node environment
+G_GEOCODE_KEY = Google geocode api key
 ```
