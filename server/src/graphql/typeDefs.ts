@@ -78,7 +78,7 @@ export const typeDefs = gql`
     PRICE_HIGH_TO_LOW
   }
 
-  input connectStripeInput {
+  input ConnectStripeInput {
     code: String!
   }
 
@@ -101,7 +101,7 @@ export const typeDefs = gql`
     """
     this will have a similar flow as the Google OAuth login flow with the exception that with Stripe, we'll be able to create the URL on the client to take the user to the consent form to log in so we won't need to have a query or mutation for this.
     """
-    connectStripe(input: connectStripeInput!): Viewer!
+    connectStripe(input: ConnectStripeInput!): Viewer!
     disconnectStripe: Viewer!
   }
 `;

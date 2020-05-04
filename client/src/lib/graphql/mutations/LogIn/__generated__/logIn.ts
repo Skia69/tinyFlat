@@ -20,10 +20,11 @@ export interface LogIn_logIn {
 
 export interface LogIn {
   /**
-   * our react client will fire this mutation while passing in the authorization
-   * code received when we already have been redirected to the Google sign-in form,
-   * it will then exchange this code with Google servers and obtain an access token
-   * of the signed-in user which can be used to interact with Google api.
+   * our client will fire this mutation while passing in the authorization code
+   * extract from the URL when we already have been redirected to the Google
+   * consent form; it will then exchange this code with Google servers and obtain
+   * an access token of the signed-in user which can be used to interact with People api,
+   * the input is optional because the user might be able to login via the clietn cookie.
    */
   logIn: LogIn_logIn;
 }

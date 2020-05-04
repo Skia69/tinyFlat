@@ -913,7 +913,7 @@
         "fields": [
           {
             "name": "logIn",
-            "description": "our react client will fire this mutation while passing in the authorization\ncode received when we already have been redirected to the Google sign-in form,\nit will then exchange this code with Google servers and obtain an access token\nof the signed-in user which can be used to interact with Google api.",
+            "description": "our client will fire this mutation while passing in the authorization code\nextract from the URL when we already have been redirected to the Google\nconsent form; it will then exchange this code with Google servers and obtain\nan access token of the signed-in user which can be used to interact with People api,\nthe input is optional because the user might be able to login via the clietn cookie.",
             "args": [
               {
                 "name": "input",
@@ -940,6 +940,53 @@
           },
           {
             "name": "logOut",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Viewer",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "connectStripe",
+            "description": "this will have a similar flow as the Google OAuth login flow with the\nexception that with Stripe, we'll be able to create the URL on the client to\ntake the user to the consent form to log in so we won't need to have a query\nor mutation for this.",
+            "args": [
+              {
+                "name": "input",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "ConnectStripeInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Viewer",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "disconnectStripe",
             "description": null,
             "args": [],
             "type": {
@@ -988,7 +1035,7 @@
       {
         "kind": "OBJECT",
         "name": "Viewer",
-        "description": "this is the actual person viewing/using our app.\nThey don't have to be logged in but we still want the client to inform us that someone is viewing our app.\nHence, every field is optional but the \"didRequest\".\n\n\"id\" is the actual identifier received from the People api which we'll resolve into \"_id\" when storing it in Mongodb.\n\n\"hasWallet\" is being used instead of \"walletId\" that's to be received from\nStripe because we don't wanna send the actual wallet id to the client for\nsecurity reasons.",
+        "description": " this is the actual person viewing/using our app.\nThey don't have to be logged in but we still want the client to inform us that someone is viewing our app.\nHence, every field is optional but the \"didRequest\".\n\n\"id\" is the actual identifier received from the People api which we'll resolve into \"_id\" when storing it in Mongodb.\n\n\"hasWallet\" is being used instead of \"walletId\" that's to be received from\nStripe because we don't wanna send the actual wallet id to the client for\nsecurity reasons.",
         "fields": [
           {
             "name": "id",
@@ -1057,6 +1104,31 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ConnectStripeInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "code",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },

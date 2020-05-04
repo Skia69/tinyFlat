@@ -12,7 +12,7 @@ import { ListingsFilter } from '../../lib/graphql/globalTypes';
 import { ListingsFilters, ListingsPagination, ListingsSkeleton } from './components';
 
 const { Content } = Layout;
-const PAGE_LIMIT = 4;
+const PAGE_LIMIT = 8;
 
 const { Paragraph, Text, Title } = Typography;
 interface MatchParams {

@@ -5,7 +5,17 @@ import ApolloClient from 'apollo-boost';
 import { ApolloProvider, useMutation } from '@apollo/react-hooks';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Layout, Affix, Spin } from 'antd';
-import { Home, Host, Listing, Listings, NotFound, User, Login, AppHeader } from './sections';
+import {
+  Home,
+  Host,
+  Listing,
+  Listings,
+  NotFound,
+  User,
+  Login,
+  AppHeader,
+  Stripe,
+} from './sections';
 import { LOG_IN } from './lib/graphql/mutations';
 import {
   LogIn as LogInData,
@@ -93,6 +103,11 @@ const App = () => {
             exact
             path="/login"
             render={(props) => <Login {...props} setViewer={setViewer} />}
+          />
+          <Route
+            exact
+            path="/stripe"
+            render={(props) => <Stripe {...props} viewer={viewer} setViewer={setViewer} />}
           />
           <Route exact path="/user/:id" render={(props) => <User {...props} viewer={viewer} />} />
           <Route component={NotFound} />

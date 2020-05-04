@@ -75,9 +75,18 @@ export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>
       setBookingsPage={setBookingsPage}
     />
   ) : null;
+  /* if the user couldn't connect to Stripe, 
+  the URL would look something like this:`/user/${viewer.id}?stripe_error=true` 
+  we can make use of that and show an Error banner. */
+  const stripeError = new URL(window.location.href).searchParams.get('stripe_error');
+
+  const stripeErrorBanner = stripeError ? (
+    <ErrorBanner description="We had an issue connecting with Stripe. Please try again soon." />
+  ) : null;
 
   return (
     <Content className="user">
+      {stripeErrorBanner}
       <Row gutter={12} justify="space-between">
         <Col xs={24}>{userProfileElement}</Col>
         <Col xs={24}>
