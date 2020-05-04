@@ -14,7 +14,8 @@
     "graphql": "^14.6.0",
     "lodash.merge": "^4.6.2",
     "mongodb": "^3.5.2",
-    "prettier": "^2.0.4"
+    "prettier": "^2.0.4",
+    "stripe": "^8.49.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
