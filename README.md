@@ -1,18 +1,27 @@
 # tinySkia
 Home Booking WebApp (React, Typescript, Nodejs, GraphQL, Apollo &amp; MongoDB)
 
-## Environment Variables
+## Environment Variables (Client)
 
-### Server 
+### Client
+File: ``client/.env``
 ```
-PORT = Port number
-DB_USER = MongoDB user
-DB_USER_PASSWORD = MongoDB password
-DB_CUSTER = MongdoDB cluster
-G_CLIENT_ID = Google client id
-G_CLIENT_SECRET = Google client secret
-PUBLIC_URL = Public url
-SECRET = Cookie secret
-NODE_ENV = Node environment
-G_GEOCODE_KEY = Google geocode api key
+STRIPE_PUBLISHABLE_KEY = Stripe Publishable Key
+STRIPE_CLIENT_ID = Stripe Client ID
+```
+
+### Server (Server)
+File: ``Server/.env``
+```
+PORT = Port Number
+PUBLIC_URL = Client URL
+DB_USER = MongoDB Atlas Username
+DB_USER_PASSWORD = MongoDB Atlas Password
+DB_CLUSTER = MongoDB Atlas Cluster ID
+G_CLIENT_ID = Google OAuth API Client ID
+G_CLIENT_SECRET = Google OAuth API Client Secret
+G_GEOCODE_KEY = Google API key with Geocoding API enabled
+STRIPE_SECRET_KEY= Stripe Secret Key
+SECRET = Secret used to sign cookies
+NODE_ENV = Either "development" or "production"
 ```
