@@ -53,7 +53,7 @@ export const typeDefs = gql`
     listings(limit: Int!, page: Int!): Listings!
   }
   """
-  this is the actual person viewing/using our app.
+   this is the actual person viewing/using our app.
   They don't have to be logged in but we still want the client to inform us that someone is viewing our app.
   Hence, every field is optional but the "didRequest".
 
@@ -78,6 +78,10 @@ export const typeDefs = gql`
     PRICE_HIGH_TO_LOW
   }
 
+  input connectStripeInput {
+    code: String!
+  }
+
   type Query {
     # this will redirect our user to Google consent form from which we can obtain a code.
     authUrl: String!
@@ -88,11 +92,16 @@ export const typeDefs = gql`
 
   type Mutation {
     """
-    our react client will fire this mutation while passing in the authorization code received when we already have been redirected to the Google sign-in form,
-    it will then exchange this code with Google servers and obtain an access token of the signed-in user which can be used to interact with Google api.
+    our client will fire this mutation while passing in the authorization code extract from the URL when we already have been redirected to the Google consent form; it will then exchange this code with Google servers and obtain an access token of the signed-in user which can be used to interact with People api,
+    the input is optional because the user might be able to login via the clietn cookie.
     """
     logIn(input: LogInInput): Viewer!
     # this will return an instance of the logged in user.
     logOut: Viewer!
+    """
+    this will have a similar flow as the Google OAuth login flow with the exception that with Stripe, we'll be able to create the URL on the client to take the user to the consent form to log in so we won't need to have a query or mutation for this.
+    """
+    connectStripe(input: connectStripeInput!): Viewer!
+    disconnectStripe: Viewer!
   }
 `;

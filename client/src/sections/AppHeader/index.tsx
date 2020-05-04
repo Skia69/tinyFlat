@@ -27,7 +27,7 @@ export const AppHeader = withRouter(
         setSearch('');
         return;
       }
-      // populate the search input with the desired location name upon visiting the listings page.
+      // populate the search input with the location name upon visiting the listings page.
       if (pathname.includes('listings') && pathnameSubstring.length === 3) {
         setSearch(pathnameSubstring[2]);
         return;
