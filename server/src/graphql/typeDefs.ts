@@ -82,6 +82,16 @@ export const typeDefs = gql`
     code: String!
   }
 
+  input HostListingInput {
+    title: String!
+    description: String!
+    image: String!
+    type: ListingType!
+    address: String!
+    price: Int!
+    numOfGuests: Int!
+  }
+
   type Query {
     # this will redirect our user to Google consent form from which we can obtain a code.
     authUrl: String!
@@ -103,5 +113,6 @@ export const typeDefs = gql`
     """
     connectStripe(input: ConnectStripeInput!): Viewer!
     disconnectStripe: Viewer!
+    hostListing(input: HostListingInput!): Listing!
   }
 `;
