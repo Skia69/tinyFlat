@@ -10,6 +10,7 @@ import { UserProfile, UserListings, UserBookings } from './components';
 
 interface Props {
   viewer: Viewer;
+  setViewer: (viewer: Viewer) => void;
 }
 interface MatchParams {
   id: string;
@@ -20,11 +21,11 @@ const { Content } = Layout;
 const PAGE_LIMIT = 4;
 
 // we're using intersection type because there are 2 interfaces.
-export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>) => {
+export const User = ({ viewer, setViewer, match }: Props & RouteComponentProps<MatchParams>) => {
   const [listingsPage, setListingsPage] = useState(1);
   const [bookingsPage, setBookingsPage] = useState(1);
-
-  const { data, loading, error } = useQuery<UserData, UserVariables>(USER, {
+  // "refetch" is being used in order to reflect the changes of a user whenever they disconnect from stripe.
+  const { data, loading, error, refetch } = useQuery<UserData, UserVariables>(USER, {
     variables: {
       id: match.params.id, // extract the id from the url.
       bookingsPage,
@@ -32,6 +33,10 @@ export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>
       limit: PAGE_LIMIT,
     },
   });
+  // this is used to refetch the user data when their "hasWallet" is undefined.
+  const handleUserRefetch = async () => {
+    await refetch();
+  };
 
   if (loading) {
     return (
@@ -56,7 +61,15 @@ export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>
   const userListings = user ? user.listings : null;
   const userBookings = user ? user.bookings : null;
 
-  const userProfileElement = user ? <UserProfile user={user} viewerIsUser={viewerIsUser} /> : null;
+  const userProfileElement = user ? (
+    <UserProfile
+      user={user}
+      viewer={viewer}
+      viewerIsUser={viewerIsUser}
+      setViewer={setViewer}
+      handleUserRefetch={handleUserRefetch}
+    />
+  ) : null;
 
   const userListingsElement = userListings ? (
     <UserListings
