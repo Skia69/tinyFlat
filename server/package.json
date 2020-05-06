@@ -8,6 +8,7 @@
   "dependencies": {
     "@google/maps": "^1.1.0",
     "apollo-server-express": "^2.9.16",
+    "cloudinary": "^1.21.0",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "googleapis": "^49.0.0",
