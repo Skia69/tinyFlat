@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
-import { Form, Input, InputNumber, Upload, Layout, Radio, Typography } from 'antd';
+import { Form, Input, InputNumber, Upload, Layout, Radio, Typography, Button } from 'antd';
 import { BankOutlined, HomeOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Viewer } from '../../lib/types';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { ListingType } from '../../lib/graphql/globalTypes';
-import { iconColor, displayErrorMessage } from '../../lib/utils';
+import { iconColor, displayErrorMessage, displaySuccessNotification } from '../../lib/utils';
 import { UploadChangeParam } from 'antd/lib/upload';
+import { Store, ValidateErrorEntity } from 'rc-field-form/lib/interface';
+import { useMutation } from '@apollo/react-hooks';
+import {
+  HostListing as HostListingData,
+  HostListingVariables,
+} from '../../lib/graphql/mutations/HostListing/__generated__/HostListing';
+import { HOST_LISTING } from '../../lib/graphql/mutations';
 
 interface Props {
   viewer: Viewer;
@@ -18,22 +25,22 @@ const { Item } = Form;
 export const Host = ({ viewer }: Props) => {
   const [imageLoading, setImageLoading] = useState(false);
   const [imageBase64Value, setImageBase64Value] = useState<string | null>(null);
+  const [hostListing, { loading, data }] = useMutation<HostListingData, HostListingVariables>(
+    HOST_LISTING,
+    {
+      onCompleted: () => {
+        displaySuccessNotification("You've successfully created your listing!");
+      },
+      onError: () => {
+        displayErrorMessage(
+          "Sorry! We weren't able to create your listing. Please try again later.",
+        );
+      },
+    },
+  );
+  // initialize the Form.
+  const [form] = Form.useForm();
 
-  const handleImageUpload = (info: UploadChangeParam) => {
-    const { file } = info;
-    if (file.status === 'uploading') {
-      setImageLoading(true);
-      return;
-    }
-    // grab the original file and turn it into base64.
-    if (file.status === 'done' && file.originFileObj) {
-      // helper function that will receive the original file and process it into base64.
-      getBase64Value(file.originFileObj, (imageBase64Value) => {
-        setImageBase64Value(imageBase64Value);
-        setImageLoading(false);
-      });
-    }
-  };
   // user has to be logged in and connected to stripe in order to host a Listing.
   if (!viewer.id || !viewer.hasWallet) {
     return (
@@ -52,9 +59,74 @@ export const Host = ({ viewer }: Props) => {
     );
   }
 
+  if (loading) {
+    return (
+      <Content className="host-content">
+        <div className="host__form-header">
+          <Title level={3} className="host__form-title">
+            Please wait!
+          </Title>
+          <Text type="secondary">We're creating your listing now.</Text>
+        </div>
+      </Content>
+    );
+  }
+  // when the form creation is complete, redirect the user to the listing's page.
+  if (data?.hostListing) {
+    return <Redirect to={`/listing/${data.hostListing.id}`} />;
+  }
+
+  const handleHostListing = (values: Store) => {
+    // parse the address in order to be picked up by the geocoder.
+    const fullAddress = `${values.address}, ${values.city}, ${values.state}, ${values.postalCode}`;
+    const input = {
+      title: values.title,
+      description: values.description,
+      image: imageBase64Value as string,
+      address: fullAddress,
+      type: values.type,
+      price: Math.round(values.price * 100),
+      numOfGuests: values.numOfGuests,
+    };
+    // fire the mutation.
+    hostListing({
+      variables: {
+        input,
+      },
+    });
+  };
+
+  const onFinishFailed = (err: ValidateErrorEntity) => {
+    if (err) {
+      displayErrorMessage('Please complete all required form fields!');
+      return;
+    }
+  };
+
+  const handleImageUpload = (info: UploadChangeParam) => {
+    const { file } = info;
+    if (file.status === 'uploading') {
+      setImageLoading(true);
+      return;
+    }
+    // grab the original file and turn it into base64.
+    if (file.status === 'done' && file.originFileObj) {
+      // helper function that will receive the original file and process it into base64.
+      getBase64Value(file.originFileObj, (imageBase64Value) => {
+        setImageBase64Value(imageBase64Value);
+        setImageLoading(false);
+      });
+    }
+  };
+
   return (
     <Content className="host-content">
-      <Form layout="vertical">
+      <Form
+        layout="vertical"
+        form={form}
+        onFinish={handleHostListing}
+        onFinishFailed={onFinishFailed}
+      >
         <div className="host__form-header">
           <Title level={3} className="host__form-title">
             Hi! Let's get started listing your place.
@@ -64,56 +136,100 @@ export const Host = ({ viewer }: Props) => {
           </Text>
         </div>
 
-        <Item label="Home Type">
+        <Item
+          name="type"
+          label="Home Type"
+          rules={[{ required: true, message: 'Please let us know the home type!' }]}
+        >
           <Radio.Group>
             <Radio.Button value={ListingType.APARTMENT}>
-              <BankOutlined style={{ color: iconColor }} /> <span>Apartment</span>
+              <BankOutlined style={{ color: iconColor }} />
+              {'  '}
+              <span>Apartment</span>
             </Radio.Button>
             <Radio.Button value={ListingType.HOUSE}>
-              <HomeOutlined style={{ color: iconColor }} /> <span>House</span>
+              <HomeOutlined style={{ color: iconColor }} />
+              {'  '}
+              <span>House</span>
             </Radio.Button>
           </Radio.Group>
         </Item>
 
-        <Item label="Title" extra="Max character count of 45">
+        <Item
+          name="numOfGuests"
+          label="Max number of Guests"
+          rules={[{ required: true, message: 'Please enter a max number of guests!' }]}
+        >
+          <InputNumber min={0} placeholder="4" />
+        </Item>
+
+        <Item
+          name="title"
+          label="Title"
+          extra="Max character count of 45"
+          rules={[{ required: true, message: 'Please enter a title for your listing!' }]}
+        >
           <Input maxLength={45} placeholder="The iconic and luxurious Bel-Air mansion" />
         </Item>
 
-        <Item label="Description of listing" extra="Max character count of 400">
+        <Item
+          name="description"
+          label="Description of listing"
+          extra="Max character count of 400"
+          rules={[{ required: true, message: 'Please enter a description for your listing!' }]}
+        >
           <Input.TextArea
             rows={3}
             maxLength={400}
-            placeholder={`Modern, clean, and iconic home of the Fresh Prince.Situated in the heart of Bel-Air, Los Angeles.`}
+            placeholder="Modern, clean, and iconic home of the Fresh Price. Situated in the heart of Bel-Air, Los Angeles."
           />
         </Item>
 
-        <Item label="Address">
+        <Item
+          name="address"
+          label="Address"
+          rules={[{ required: true, message: 'Please enter an address for your listing!' }]}
+        >
           <Input placeholder="251 North Bristol Avenue" />
         </Item>
 
-        <Item label="City/Town">
+        <Item
+          name="city"
+          label="City / Town"
+          rules={[{ required: true, message: 'Please enter a city (or region) for your listing!' }]}
+        >
           <Input placeholder="Los Angeles" />
         </Item>
 
-        <Item label="State/Province">
+        <Item
+          name="state"
+          label="State / Province"
+          rules={[{ required: true, message: 'Please enter a state for your listing!' }]}
+        >
           <Input placeholder="California" />
         </Item>
 
-        <Item label="Zip/Postal Code">
+        <Item
+          name="postalCode"
+          label="Zip / Postal Code"
+          rules={[{ required: true, message: 'Please enter a zip code for your listing!' }]}
+        >
           <Input placeholder="Please enter a zip code for your listing!" />
         </Item>
 
-        <Item label="Image" extra="Images have to be under 1MB in size and of type JPG or PNG">
+        <Item
+          name="image"
+          label="Image"
+          extra="Images have to be under 1MB in size and of type JPG or PNG"
+          rules={[{ required: true, message: 'Please provide an image for your listing!' }]}
+        >
           <div className="host__form-image-upload">
             <Upload
               name="image"
               listType="picture-card"
               showUploadList={false}
-              /* this is to prevent an AJAX req from firing upon uploading the image. */
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              /* check if the image is of valid type. */
+              action="https://httpstat.us/200" // prevent AJAX req from firing.
               beforeUpload={beforeImageUpload}
-              /* this will trigger the image is first uploaded and when the image upload is complete. */
               onChange={handleImageUpload}
             >
               {imageBase64Value ? (
@@ -129,8 +245,19 @@ export const Host = ({ viewer }: Props) => {
           </div>
         </Item>
 
-        <Item label="Price" extra="All prices in $USD/night">
+        <Item
+          name="price"
+          label="Price"
+          extra="All prices in $USD / night"
+          rules={[{ required: true, message: 'Please provide a listing price!' }]}
+        >
           <InputNumber min={0} placeholder="120" />
+        </Item>
+
+        <Item>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
         </Item>
       </Form>
     </Content>
