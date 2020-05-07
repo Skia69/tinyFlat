@@ -92,6 +92,13 @@ export const typeDefs = gql`
     numOfGuests: Int!
   }
 
+  input CreateBookingInput {
+    id: ID! # id of listing being booked.
+    source: String! # the Stripe React component will pass this for us.
+    checkIn: String!
+    checkOut: String!
+  }
+
   type Query {
     # this will redirect our user to Google consent form from which we can obtain a code.
     authUrl: String!
@@ -114,5 +121,6 @@ export const typeDefs = gql`
     connectStripe(input: ConnectStripeInput!): Viewer!
     disconnectStripe: Viewer!
     hostListing(input: HostListingInput!): Listing!
+    createBooking(input: CreateBookingInput!): Booking!
   }
 `;
