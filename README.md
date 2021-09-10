@@ -1,4 +1,4 @@
-# tinySkia
+# tinyFlat
 Home Booking WebApp (React, Typescript, Nodejs, GraphQL, Apollo &amp; MongoDB)
 
 ### Environment Variables (Client)
